@@ -1,26 +1,3 @@
-const players = [
-    {
-        name: "Michael",
-        score: 50,
-        id: 1
-    },
-    {
-        name: "Andreea",
-        score: 85,
-        id: 2
-    },
-    {
-        name: "John",
-        score: 95,
-        id: 3
-    },
-    {
-        name: "Gabi",
-        score: 80,
-        id: 4
-    }
-];
-
 const Header = (props) => {
     return (
         <header>
@@ -64,9 +41,11 @@ class Counter extends React.Component {
 }
 
 const Player = (props) => {
+    console.log(props.removePlayer);
     return (
         <div className="player">
             <span className="player-name">
+                <button className="remove-player" onClick={() => props.removePlayer(props.id) }>✖</button>
                 { props.name }
             </span>
 
@@ -78,10 +57,41 @@ const Player = (props) => {
 
 //App top -level -component
 //Components =  parent - child relationship
-const App = (props) => {
-    return (
-        <div className="scoreboard">
-            <Header title="Scoreboard" totalPlayers={ props.initialPlayers.length } />
+class App extends React.Component {
+
+    state = {
+        players: [
+            {
+                name: "Michael",
+                id: 1
+            },
+            {
+                name: "Andreea",
+                id: 2
+            },
+            {
+                name: "John",
+                id: 3
+            },
+            {
+                name: "Gabi",
+                id: 4
+            }
+        ]
+    };
+
+    handleRemovePlayer = (id) => {
+        this.setState( prevState => {
+            return {
+                players: prevState.players.filter( p => { return p.id !== id }  )
+            };
+        })
+    };
+
+    render() {
+        return (
+            <div className="scoreboard">
+            <Header title="Scoreboard" totalPlayers={ this.state.players.length } />
 
             {/* Players list */}
             {/* concept of: independent, self-contained & reusable components - which supports the idea of separation of concerns  */}
@@ -90,16 +100,19 @@ const App = (props) => {
             {/*  keys needs to be unique -- in order for React to keep track of elements that have changed  */}
             {/* key is needed only for those elements that gets removed or updated or rearranged within UI - so which items where changed, removed or updated from the DOM  */}
 
-            { props.initialPlayers.map( (player) => {
+            { this.state.players.map( (player) => {
                 return <Player
                         name={player.name}
-                        key={player.id.toString() } />
+                        id={player.id}
+                        key={player.id.toString() }
+                        removePlayer={this.handleRemovePlayer} />
             })}
         </div>
-    );
-};
+        );
+    }
+}
 
 ReactDOM.render(
-    <App initialPlayers={ players } />,
+    <App />,
     document.getElementById('root')
 );
