@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./../App.css";
 import Header from "./Header";
 import Players from "./Players";
+import AddPlayers from "./AddPlayers";
 
 class App extends Component {
   state = {
@@ -34,6 +35,8 @@ class App extends Component {
     ]
   };
 
+  nextId = 5;
+
   handleRemovePlayer = id => {
     this.setState(prevState => {
       return {
@@ -49,6 +52,21 @@ class App extends Component {
       return {
         score: (prevState.players[index].score =
           prevState.players[index].score + delta)
+      };
+    });
+  };
+
+  handleAddPlayers = name => {
+    this.setState(prevState => {
+      return {
+        players: [
+          ...prevState.players,
+          {
+            name: name,
+            score: 0,
+            id: (this.nextId += 1)
+          }
+        ]
       };
     });
   };
@@ -70,6 +88,7 @@ class App extends Component {
           );
         })}
         <Players />
+        <AddPlayers addPlayers={this.handleAddPlayers} />
       </div>
     );
   }
